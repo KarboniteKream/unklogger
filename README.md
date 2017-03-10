@@ -10,6 +10,9 @@ yarn add unklogger
 ```javascript
 const Log = require("unklogger");
 
-Log.success("Looking good!");     # 2017-03-10 18:55:15 | Looking good!
-Log.error("Server #1", "OH NO!"); # 2017-03-10 19:00:00 | [Server #1] OH NO!
+Log.success("Looking good!");
+// 2017-03-10 18:55:15 | Looking good!
+
+Log.error("Server #1", "OH NO!");
+// 2017-03-10 19:00:00 | [Server #1] OH NO!
 ```
