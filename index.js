@@ -15,9 +15,9 @@ function write(stream, color, tag, message) {
 	let timestamp = moment().format("YYYY-MM-DD HH:mm:ss");
 
 	if (color === null) {
-		stream(timestamp, output);
+		stream(`${timestamp} | ${output}`);
 	} else {
-		stream(color(timestamp, output));
+		stream(color(`${timestamp} | ${output}`));
 	}
 }
 
