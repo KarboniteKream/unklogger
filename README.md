@@ -15,4 +15,7 @@ Log.success("Looking good!");
 
 Log.error("Server #1", "OH NO!");
 // 2017-03-10 19:00:00 | [Server #1] OH NO!
+
+Log.error("Server #1", "OH NO!", {"0": "foo", "1": "bar"}, [0, 1, 2]);
+// 2017-03-10 19:00:00 | [Server #1] OH NO! {"0": "foo", "1": "bar"} [0, 1, 2]
 ```
