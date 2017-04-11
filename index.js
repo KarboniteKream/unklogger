@@ -5,9 +5,10 @@ const chalk = require("chalk");
 function write(stream, color, tag, message) {
 	let output = null;
 
+	// If array of messages contains any message parse it.
 	if (message.length > 0) {
 		output = `[${tag}] `;
-		for(let msg of message) {
+		for (let msg of message) {
 			 output += `${JSON.stringify(msg)} `;
 		}
 	} else {
@@ -40,36 +41,34 @@ function pad(number) {
 	return (number < 10) ? ("0" + number) : number;
 }
 
+/* Parse arguments */
+function parseArgs(args) {
+	// First arg is tag.
+	let tag = args[0];
+	delete args[0];
+	// Map other args into array
+	let messages = Object.keys(args).map(key => args[key]);
+	return {tag, messages};
+}
+
 function success() {
-	let messages;
-	let tag = arguments[0];
-	delete arguments[0];
-	messages = Object.keys(arguments).map(key => arguments[key]);
-	write(console.log, chalk.green, tag, message);
+	let {tag, messages} = parseArgs(arguments);
+	write(console.log, chalk.green, tag, messages);
 }
 
 function info() {
-	let messages;
-	let tag = arguments[0];
-	delete arguments[0];
-	messages = Object.keys(arguments).map(key => arguments[key]);
+	let {tag, messages} = parseArgs(arguments);
 	// Handle light and dark terminal backgrounds by not specifying a color.
-	write(console.info, null, tag, message);
+	write(console.info, null, tag, messages);
 }
 
 function warn() {
-	let messages;
-	let tag = arguments[0];
-	delete arguments[0];
-	messages = Object.keys(arguments).map(key => arguments[key]);
-	write(console.warn, chalk.yellow, tag, message);
+	let {tag, messages} = parseArgs(arguments);
+	write(console.warn, chalk.yellow, tag, messages);
 }
 
 function error() {
-	let messages;
-	let tag = arguments[0];
-	delete arguments[0];
-	messages = Object.keys(arguments).map(key => arguments[key]);
+	let {tag, messages} = parseArgs(arguments);
 	write(console.error, chalk.red, tag, messages);
 }
 
