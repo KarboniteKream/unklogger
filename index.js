@@ -5,8 +5,11 @@ const chalk = require("chalk");
 function write(stream, color, tag, message) {
 	let output = null;
 
-	if (message) {
-		output = `[${tag}] ${message}`;
+	if (message.length > 0) {
+		output = `[${tag}] `;
+		for(let msg of message) {
+			 output += `${JSON.stringify(msg)} `;
+		}
 	} else {
 		output = tag;
 	}
@@ -37,21 +40,37 @@ function pad(number) {
 	return (number < 10) ? ("0" + number) : number;
 }
 
-function success(tag, message) {
+function success() {
+	let messages;
+	let tag = arguments[0];
+	delete arguments[0];
+	messages = Object.keys(arguments).map(key => arguments[key]);
 	write(console.log, chalk.green, tag, message);
 }
 
-function info(tag, message) {
+function info() {
+	let messages;
+	let tag = arguments[0];
+	delete arguments[0];
+	messages = Object.keys(arguments).map(key => arguments[key]);
 	// Handle light and dark terminal backgrounds by not specifying a color.
 	write(console.info, null, tag, message);
 }
 
-function warn(tag, message) {
+function warn() {
+	let messages;
+	let tag = arguments[0];
+	delete arguments[0];
+	messages = Object.keys(arguments).map(key => arguments[key]);
 	write(console.warn, chalk.yellow, tag, message);
 }
 
-function error(tag, message) {
-	write(console.error, chalk.red, tag, message);
+function error() {
+	let messages;
+	let tag = arguments[0];
+	delete arguments[0];
+	messages = Object.keys(arguments).map(key => arguments[key]);
+	write(console.error, chalk.red, tag, messages);
 }
 
 module.exports = {
