@@ -5,7 +5,10 @@ A simple and colorful logger for Node.
 ```bash
 yarn add unklogger
 ```
-
+## Test
+```bash
+yarn run test
+```
 ## Usage
 ```javascript
 const Log = require("unklogger");
