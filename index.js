@@ -1,18 +1,32 @@
 "use strict";
 
 const chalk = require("chalk");
+const util = require('util');
 
 function write(stream, color, tag, message) {
 	let output = null;
-
 	// If array of messages contains any message parse it.
 	if (message.length > 0) {
 		output = `[${tag}] `;
 		for (let msg of message) {
-			 output += `${JSON.stringify(msg)} `;
+			try{
+				// Do we want this?
+				// TODO: Do not stringify: bools, numbers.
+				msg = JSON.stringify(msg, null, 4);
+			} catch(e) {
+				// Replaces circural referenced objects with [Circural] so we can print them.
+				msg = util.inspect(msg);
+			}
+			output += msg;
 		}
 	} else {
-		output = tag;
+		if (typeof tag == "object") {
+			// If object, pretty print
+			// TODO: Do we want this?
+			output = JSON.stringify(tag, null, 4);
+		} else {
+			output = tag;
+		}
 	}
 
 	let timestamp = getTimestamp();
