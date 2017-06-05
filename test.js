@@ -1,11 +1,6 @@
 "use strict";
 
-let Log = require("./index");
-
-let i = Log.info;
-let e = Log.error;
-let s = Log.success;
-let w = Log.warn;
+const Log = require("./index");
 
 let object = {
 	number: 123,
@@ -16,18 +11,18 @@ let object = {
 	},
 };
 
-i(object);
-i("Object", object, "String after object");
+Log.info(object);
+Log.info("Object", object, "String after object");
 
 let circural = object;
 circural.a = circural;
-i("Circural Object", circural);
+Log.info("Circural Object", circural);
 
-w("String", "Text string that is long enough.");
+Log.warn("String", "Text string that is long enough.");
 
-s("Array", [0, 1, 2, 3, 4, 5]);
+Log.success("Array", [0, 1, 2, 3, 4, 5]);
 
 // Error with stack
-let err = new Error("Oops, something went wrong. Whoopsy daisy...");
-e(err.stack);
+let Err = new Error("Oops, something went wrong. Whoopsy daisy...");
+Log.error(Err.stack);
 
