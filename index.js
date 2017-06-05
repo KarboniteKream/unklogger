@@ -5,7 +5,6 @@ const util = require("util");
 
 function write(stream, color, messages) {
 	let output = "";
-
 	let prefix = "";
 
 	// If there is more than one message, treat the first as a tag.
