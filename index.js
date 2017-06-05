@@ -7,21 +7,23 @@ function write(stream, color, messages) {
 	let output = "";
 
 	let prefix = "";
-	// If more than one message, the first is tag.
+
+	// If more than one message, treat the first as tag.
 	if (messages.length > 1) {
 		output = `[${messages.shift()}]`;
 		prefix = " ";
 	}
-	for (let msg of messages) {
-		if (typeof msg === "object") {
+	for (let message of messages) {
+		if (typeof message === "object") {
 			try {
-				msg = JSON.stringify(msg, null, 4);
+				message = JSON.stringify(message, null, 4);
 			} catch (e) {
 				// Replaces circural referenced objects with [Circural] so we can print them.
-				msg = util.inspect(msg);
+				message = util.inspect(message);
 			}
 		}
-		output += prefix + msg;
+
+		output += prefix + message;
 	}
 	let timestamp = getTimestamp();
 
@@ -50,23 +52,23 @@ function pad(number) {
 }
 
 function success(...args) {
-	let messages = Object.keys(args).map((key) => args[key]);
+	let messages = [...args];
 	write(console.log, chalk.green, messages);
 }
 
 function info(...args) {
-	let messages = Object.keys(args).map((key) => args[key]);
+	let messages = [...args];
 	// Handle light and dark terminal backgrounds by not specifying a color.
 	write(console.info, null, messages);
 }
 
 function warn(...args) {
-	let messages = Object.keys(args).map((key) => args[key]);
+	let messages = [...args];
 	write(console.warn, chalk.yellow, messages);
 }
 
 function error(...args) {
-	let messages = Object.keys(args).map((key) => args[key]);
+	let messages = [...args];
 	write(console.error, chalk.red, messages);
 }
 
