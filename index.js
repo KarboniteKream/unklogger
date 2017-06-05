@@ -18,7 +18,7 @@ function write(stream, color, messages) {
 			try {
 				message = JSON.stringify(message, null, 4);
 			} catch (e) {
-				// If JSON.stringify fials, the object has circural references.
+				// If JSON.stringify() fails, the object has circural references.
 				// Replaces circural referenced objects with [Circural] so we can print them.
 				message = util.inspect(message);
 			}
