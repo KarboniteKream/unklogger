@@ -5,9 +5,7 @@ const Log = require("./index");
 let object = {
 	number: 123,
 	object: {
-		0: {
-			0: "asd",
-		},
+		0: "asd",
 	},
 };
 
