@@ -11,12 +11,9 @@
     "logger"
   ],
   "scripts": {
-    "test": "node tests/test.js"
+    "test": "node test.js"
   },
   "dependencies": {
     "chalk": "^1.1.3"
-  },
-  "devDependencies": {
-    "axios": "^0.16.1"
   }
 }
