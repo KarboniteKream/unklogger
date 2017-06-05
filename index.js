@@ -1,14 +1,30 @@
 "use strict";
 
 const chalk = require("chalk");
+const util = require("util");
 
-function write(stream, color, tag, message) {
-	let output = null;
+function write(stream, color, messages) {
+	let output = "";
+	let prefix = "";
 
-	if (message) {
-		output = `[${tag}] ${message}`;
-	} else {
-		output = tag;
+	// If there is more than one message, treat the first as a tag.
+	if (messages.length > 1) {
+		output = `[${messages.shift()}]`;
+		prefix = " ";
+	}
+
+	for (let message of messages) {
+		if (typeof message === "object") {
+			try {
+				message = JSON.stringify(message, null, 4);
+			} catch (e) {
+				// If JSON.stringify() fails, the object has circural references.
+				// Replaces circural referenced objects with [Circural] so we can print them.
+				message = util.inspect(message);
+			}
+		}
+
+		output += prefix + message;
 	}
 
 	let timestamp = getTimestamp();
@@ -37,21 +53,21 @@ function pad(number) {
 	return (number < 10) ? ("0" + number) : number;
 }
 
-function success(tag, message) {
-	write(console.log, chalk.green, tag, message);
+function success(...args) {
+	write(console.log, chalk.green, [...args]);
 }
 
-function info(tag, message) {
+function info(...args) {
 	// Handle light and dark terminal backgrounds by not specifying a color.
-	write(console.info, null, tag, message);
+	write(console.info, null, [...args]);
 }
 
-function warn(tag, message) {
-	write(console.warn, chalk.yellow, tag, message);
+function warn(...args) {
+	write(console.warn, chalk.yellow, [...args]);
 }
 
-function error(tag, message) {
-	write(console.error, chalk.red, tag, message);
+function error(...args) {
+	write(console.error, chalk.red, [...args]);
 }
 
 module.exports = {

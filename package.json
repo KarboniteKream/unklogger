@@ -10,6 +10,12 @@
     "node",
     "logger"
   ],
+  "scripts": {
+    "test": "node test.js"
+  },
+  "files": [
+    "index.js"
+  ],
   "dependencies": {
     "chalk": "^1.1.3"
   }
