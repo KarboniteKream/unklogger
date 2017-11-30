@@ -27,7 +27,7 @@ function write(stream, color, messages) {
 		output += prefix + message;
 	}
 
-	let timestamp = timestamp();
+	let timestamp = getTimestamp();
 
 	if (color === null) {
 		stream(`${timestamp} | ${output}`);
@@ -36,7 +36,7 @@ function write(stream, color, messages) {
 	}
 }
 
-function timestamp() {
+function getTimestamp() {
 	let date = new Date();
 
 	let year = date.getFullYear();
@@ -71,7 +71,7 @@ function error(...args) {
 }
 
 module.exports = {
-	timestamp,
+	getTimestamp,
 	success,
 	info,
 	warn,
