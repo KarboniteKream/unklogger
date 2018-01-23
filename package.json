@@ -1,9 +1,9 @@
 {
   "name": "unklogger",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "A simple and colorful logger for Node.",
   "main": "index.js",
-  "repository": "git@github.com:KarboniteKream/unklogger.git",
+  "repository": "https://github.com/KarboniteKream/unklogger",
   "author": "Klemen Košir <klemen.kosir@kream.io>",
   "license": "MIT",
   "keywords": [
@@ -17,6 +17,6 @@
     "index.js"
   ],
   "dependencies": {
-    "chalk": "^2.1.0"
+    "chalk": "^2.3.0"
   }
 }
