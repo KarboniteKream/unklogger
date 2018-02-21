@@ -2,7 +2,7 @@
 
 const Log = require("./index");
 
-Log.info("Im a single string.");
+Log.info("I'm a single string.");
 
 let object = {
 	number: 123,
@@ -20,7 +20,7 @@ Log.info("Circural object", circural);
 
 Log.warn("String", "Text string that is long enough.");
 
-Log.warn(["Multiple", "Tags"], "I Support multiple tags.");
+Log.warn(["Multiple", "Tags"], "I support multiple tags.");
 
 Log.success("Array", [0, 1, 2, 3, 4, 5]);
 
