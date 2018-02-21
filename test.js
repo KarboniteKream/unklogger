@@ -2,6 +2,8 @@
 
 const Log = require("./index");
 
+Log.info("Im a single string.");
+
 let object = {
 	number: 123,
 	object: {
