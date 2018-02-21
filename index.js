@@ -10,7 +10,6 @@ function write(stream, color, messages) {
 	if (messages.length > 1) {
 		let first = messages.shift();
 		let tags = (Array.isArray(first) === true) ? first : [first];
-
 		output += tags.map((t) => `[${t}] `).join("");
 	}
 
