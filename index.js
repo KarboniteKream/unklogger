@@ -9,7 +9,16 @@ function write(stream, color, messages) {
 
 	// If there is more than one message, treat the first as a tag.
 	if (messages.length > 1) {
-		output = `[${messages.shift()}]`;
+		let first = messages.shift();
+		let tags = [];
+
+		if (Array.isArray(first) === true) {
+			tags = first;
+		} else {
+			tags.push(first);
+		}
+
+		output += tags.map((t) => `[${t}] `).join("");
 		prefix = " ";
 	}
 
