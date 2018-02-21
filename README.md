@@ -25,5 +25,5 @@ Log.warn("Response", "OK", {foo: "0", bar: "1"}, [0, 1, 2]);
 // 2017-03-10 19:11:07 | [Response] OK {foo: "0", bar: "1"} [0, 1, 2]
 
 Log.info(["Multiple", "Tags"], "I support multiple tags.");
-// 2017-03-10 19:11:07 | [Multiple] [Tags] I Support multiple tags.
+// 2017-03-10 19:11:07 | [Multiple] [Tags] I support multiple tags.
 ```
