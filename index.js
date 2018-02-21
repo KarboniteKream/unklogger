@@ -11,15 +11,14 @@ function write(stream, color, messages) {
 	if (messages.length > 1) {
 		let first = messages.shift();
 		let tags = [];
+
 		if (Array.isArray(first) === true) {
 			tags = first;
 		} else {
 			tags.push(first);
 		}
 
-		for (let tag of tags) {
-			output += `[${tag}] `;
-		}
+		output += tags.map((t) => `[${t}] `).join("");
 		prefix = " ";
 	}
 
