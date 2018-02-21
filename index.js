@@ -5,21 +5,12 @@ const util = require("util");
 
 function write(stream, color, messages) {
 	let output = "";
-	let prefix = "";
 
 	// If there is more than one message, treat the first as a tag.
 	if (messages.length > 1) {
 		let first = messages.shift();
-		let tags = [];
-
-		if (Array.isArray(first) === true) {
-			tags = first;
-		} else {
-			tags.push(first);
-		}
-
+		let tags = (Array.isArray(first) === true) ? first : [first];
 		output += tags.map((t) => `[${t}] `).join("");
-		prefix = " ";
 	}
 
 	for (let message of messages) {
@@ -33,7 +24,7 @@ function write(stream, color, messages) {
 			}
 		}
 
-		output += prefix + message;
+		output += message;
 	}
 
 	let timestamp = getTimestamp();
