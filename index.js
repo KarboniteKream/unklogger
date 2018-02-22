@@ -10,22 +10,22 @@ function write(stream, color, messages) {
 	if (messages.length > 1) {
 		let first = messages.shift();
 		let tags = (Array.isArray(first) === true) ? first : [first];
-		output += tags.map((t) => `[${t}] `).join("");
+		output = tags.map((t) => `[${t}] `).join("");
 	}
 
-	for (let message of messages) {
-		if (typeof message === "object") {
-			try {
-				message = JSON.stringify(message, null, 4);
-			} catch (e) {
-				// If JSON.stringify() fails, the object has circural references.
-				// Replaces circural referenced objects with [Circural] so we can print them.
-				message = util.inspect(message);
-			}
+	output += messages.map((message) => {
+		if (typeof message !== "object") {
+			return message;
 		}
 
-		output += message;
-	}
+		try {
+			return JSON.stringify(message, null, 4);
+		} catch (e) {
+			// If JSON.stringify() fails, the object has circural references.
+			// Replaces circural referenced objects with [Circural] so we can print them.
+			return util.inspect(message);
+		}
+	}).join(" ");
 
 	let timestamp = getTimestamp();
 
