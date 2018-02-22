@@ -1,6 +1,7 @@
 "use strict";
 
 const chalk = require("chalk");
+const os = require("os");
 const util = require("util");
 
 let HOOKS = {
@@ -15,6 +16,7 @@ function write(stream, color, messages) {
 		$timestamp: getTimestamp(),
 		$tags: [],
 		$message: "",
+		$args: messages,
 		$output: "",
 	};
 
@@ -24,9 +26,14 @@ function write(stream, color, messages) {
 		context.$tags = (Array.isArray(tags) === true) ? tags : [tags];
 	}
 
-	context.$message = messages.map((message) => {
+	// TODO: change to reduce.
+	context.$message = messages.map((message, idx) => {
 		if (typeof message !== "object") {
 			return message;
+		}
+
+		if (message instanceof Error) {
+			return message.stack + (idx !== messages.length - 1 ? os.EOL : "");
 		}
 
 		try {

@@ -26,5 +26,5 @@ Log.warn(["Multiple", "Tags"], "I support multiple tags.");
 Log.success("Array", [0, 1, 2, 3, 4, 5]);
 
 // Error with stack
-let Err = new Error("Oops, something went wrong. Whoopsy daisy...");
-Log.error(Err.stack);
+let err = new Error("Oops, something went wrong. Whoopsy daisy...");
+Log.error("Error", err);
