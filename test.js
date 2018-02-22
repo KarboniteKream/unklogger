@@ -3,6 +3,7 @@
 const Log = require("./index");
 
 Log.info("I'm a single string.");
+Log.info([], "And I have brothers!", "Hello there!", "Hi.");
 
 let object = {
 	number: 123,
