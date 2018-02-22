@@ -3,36 +3,57 @@
 const chalk = require("chalk");
 const util = require("util");
 
-function write(stream, color, messages) {
-	let output = "";
+let HOOKS = {
+	beforeWrite: [],
+	afterWrite: [],
+};
 
-	// If there is more than one message, treat the first as a tag.
+let EXTENSIONS = {};
+
+function write(stream, color, messages) {
+	let context = {
+		$timestamp: getTimestamp(),
+		$tags: [],
+		$message: "",
+		$output: "",
+	};
+
+	// If there is more than one message, treat the first one as tags.
 	if (messages.length > 1) {
-		let first = messages.shift();
-		let tags = (Array.isArray(first) === true) ? first : [first];
-		output = tags.map((t) => `[${t}] `).join("");
+		let tags = messages.shift();
+		context.$tags = (Array.isArray(tags) === true) ? tags : [tags];
 	}
 
-	output += messages.map((message) => {
+	context.$message = messages.map((message) => {
 		if (typeof message !== "object") {
 			return message;
 		}
 
 		try {
 			return JSON.stringify(message, null, 4);
-		} catch (e) {
-			// If JSON.stringify() fails, the object has circural references.
-			// Replaces circural referenced objects with [Circural] so we can print them.
+		} catch (_) {
+			// Handle circular references.
 			return util.inspect(message);
 		}
 	}).join(" ");
 
-	let timestamp = getTimestamp();
+	let tags = context.$tags.map((t) => `[${t}] `).join("");
+	context.$output = `${context.$timestamp} | ${tags}${context.$message}`;
 
-	if (color === null) {
-		stream(`${timestamp} | ${output}`);
-	} else {
-		stream(color(`${timestamp} | ${output}`));
+	runHooks("beforeWrite", context);
+	stream((color === null) ? context.$output : color(context.$output));
+	runHooks("afterWrite", context);
+
+	for (let [name, fn] of Object.entries(EXTENSIONS)) {
+		context[name] = (...args) => fn(context, ...args);
+	}
+
+	return context;
+}
+
+function runHooks(event, context) {
+	for (let hook of HOOKS[event]) {
+		hook(context);
 	}
 }
 
@@ -54,20 +75,43 @@ function pad(number) {
 }
 
 function success(...args) {
-	write(console.log, chalk.green, [...args]);
+	return write(console.log, chalk.green, args);
 }
 
 function info(...args) {
 	// Handle light and dark terminal backgrounds by not specifying a color.
-	write(console.info, null, [...args]);
+	return write(console.info, null, args);
 }
 
 function warn(...args) {
-	write(console.warn, chalk.yellow, [...args]);
+	return write(console.warn, chalk.yellow, args);
 }
 
 function error(...args) {
-	write(console.error, chalk.red, [...args]);
+	return write(console.error, chalk.red, args);
+}
+
+function addHook(event, fn) {
+	if (Object.keys(HOOKS).includes(event) === false) {
+		warn("unklogger", `Event '${event}' does not exist.`);
+		return;
+	}
+
+	if (fn instanceof Function === false) {
+		error("unklogger", "Argument 'fn' is not a function.");
+		return;
+	}
+
+	HOOKS[event].push(fn);
+}
+
+function addExtension(name, fn) {
+	if (fn instanceof Function === false) {
+		error("unklogger", "Argument 'fn' is not a function.");
+		return;
+	}
+
+	EXTENSIONS[name] = fn;
 }
 
 module.exports = {
@@ -76,4 +120,6 @@ module.exports = {
 	info,
 	warn,
 	error,
+	addHook,
+	addExtension,
 };
