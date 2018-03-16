@@ -7,8 +7,9 @@
   "author": "Klemen Košir <klemen.kosir@kream.io>",
   "license": "MIT",
   "keywords": [
-    "node",
-    "logger"
+    "logger",
+    "hooks",
+    "extensions"
   ],
   "scripts": {
     "test": "node test.js"

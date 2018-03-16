@@ -1,5 +1,5 @@
 # unklogger
-A simple and colorful logger for Node.
+A simple and colorful logger for Node.js.
 
 ## Installation
 ```bash
