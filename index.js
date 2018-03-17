@@ -52,6 +52,11 @@ class Log {
 	}
 
 	addExtension(name, fn) {
+		if (typeof name !== "string") {
+			this.error("unklogger", "Argument 'name' is not a string.");
+			return this;
+		}
+
 		if (fn instanceof Function === false) {
 			this.error("unklogger", "Argument 'fn' is not a function.");
 			return this;
