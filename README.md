@@ -1,4 +1,6 @@
 # unklogger
+[![Build Status](https://travis-ci.org/KarboniteKream/unklogger.svg?branch=master)](https://travis-ci.org/KarboniteKream/unklogger)
+
 A simple and colorful logger for Node.js.
 
 ## Installation
