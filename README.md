@@ -52,7 +52,12 @@ unklogger.addHook("beforeWrite", (context) => {
     context.$output += " BAR";
 });
 
-unklogger.info("ONE"); // Outputs "ONE FOO BAR";
+unklogger.addHook("afterHook", (context) => {
+    axios.post("https://www.kream.io/logs", { output: context.$output });
+});
+
+// Outputs "ONE FOO BAR" and sends a POST request with the same output.
+unklogger.info("ONE");
 ```
 
 ### Extensions
