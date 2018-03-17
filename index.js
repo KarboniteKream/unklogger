@@ -8,6 +8,7 @@ const util = require("util");
 class Log {
 	constructor() {
 		this.$config = {
+			quiet: false,
 			colors: true,
 			console: console,
 		};
@@ -120,10 +121,12 @@ class Log {
 
 		this._executeHooks("beforeWrite", context);
 
-		if (this.$config.colors === true && color instanceof Function) {
-			stream(color(context.$output));
-		} else {
-			stream(context.$output);
+		if (this.$config.quiet === false) {
+			if (this.$config.colors === true && color instanceof Function) {
+				stream(color(context.$output));
+			} else {
+				stream(context.$output);
+			}
 		}
 
 		this._executeHooks("afterWrite", context);

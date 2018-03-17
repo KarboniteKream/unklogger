@@ -12,6 +12,7 @@ before(function() {
 	};
 
 	Log.$config = {
+		quiet: false,
 		colors: false,
 		console: {
 			log: mock("log"),
@@ -106,6 +107,14 @@ describe("Log", function() {
 
 		Log.info(undefined, null);
 		assert.equal(this.$console, `${this.$timestamp} | [undefined] null`);
+	});
+
+	it("suppresses output with 'quiet'", function() {
+		let log = Log.clone();
+		log.$config.quiet = true;
+
+		log.info("FOO");
+		assert.equal(this.$console, null);
 	});
 });
 
