@@ -1,30 +1,337 @@
 "use strict";
 
+const assert = require("chai").assert;
+const chalk = require("chalk");
+const helpers = require("./helpers");
 const Log = require("./index");
 
-Log.info("I'm a single string.");
-Log.info([], "And I have brothers!", "Hello there!", "Hi.");
+before(function() {
+	let mock = (stream) => (text) => {
+		this.$stream = stream;
+		this.$console = text;
+	};
 
-let object = {
-	number: 123,
-	object: {
-		0: "asd",
-	},
-};
+	Log.$config = {
+		colors: false,
+		console: {
+			log: mock("log"),
+			info: mock("info"),
+			warn: mock("warn"),
+			error: mock("error"),
+		},
+	};
 
-Log.info(object);
-Log.info("Object", object, "String after object.");
+	Date.now = () => 732652245000;
+});
 
-let circural = object;
-circural.a = circural;
-Log.info("Circural object", circural);
+beforeEach(function() {
+	this.$console = null;
+	this.$stream = null;
+	this.$timestamp = helpers.getTimestamp();
+});
 
-Log.warn("String", "Text string that is long enough.");
+describe("Helpers", function() {
+	describe(".getTimestamp()", function() {
+		it("correctly formats the date", function() {
+			assert.match(this.$timestamp, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+		});
+	});
+});
 
-Log.warn(["Multiple", "Tags"], "I support multiple tags.");
+describe("Log", function() {
+	it("creates a new instance", function() {
+		let first = Log.new();
+		assert.notEqual(Log.$config, first.$config);
+		assert.notEqual(Log.$config.colors, first.$config.colors);
 
-Log.success("Array", [0, 1, 2, 3, 4, 5]);
+		first.$config.colors = false;
+		let second = first.new();
+		assert.notEqual(first.$config.colors, second.$config.colors);
+	});
 
-// Error with stack
-let Err = new Error("Oops, something went wrong. Whoopsy daisy...");
-Log.error(Err.stack);
+	it("clones an instance", function() {
+		let first = Log.new();
+		first.$config.colors = false;
+		let second = first.clone();
+
+		assert.notEqual(first.$config, second.$config);
+		assert.equal(first.$config.colors, second.$config.colors);
+	});
+
+	it("correctly formats the output", function() {
+		Log.info("FOO");
+		assert.match(this.$console, /^.{19} \| .{3}$/);
+	});
+
+	it("is using correct streams", function() {
+		Log.info("FOO");
+		assert.equal(this.$stream, "info");
+
+		Log.success("FOO");
+		assert.equal(this.$stream, "log");
+
+		Log.warn("FOO");
+		assert.equal(this.$stream, "warn");
+
+		Log.error("FOO");
+		assert.equal(this.$stream, "error");
+	});
+
+	it("is using correct colors", function() {
+		let log = Log.clone();
+		log.$config.colors = true;
+
+		log.info("FOO");
+		assert.equal(this.$console, `${this.$timestamp} | FOO`);
+
+		log.success("FOO");
+		assert.equal(this.$console, chalk.green(`${this.$timestamp} | FOO`));
+
+		log.warn("FOO");
+		assert.equal(this.$console, chalk.yellow(`${this.$timestamp} | FOO`));
+
+		log.error("FOO");
+		assert.equal(this.$console, chalk.red(`${this.$timestamp} | FOO`));
+	});
+
+	it("handles invalid arguments", function() {
+		Log.info();
+		assert.equal(this.$console, `${this.$timestamp} | `);
+
+		Log.info(null);
+		assert.equal(this.$console, `${this.$timestamp} | null`);
+
+		Log.info(null, null);
+		assert.equal(this.$console, `${this.$timestamp} | [null] null`);
+
+		Log.info(undefined, null);
+		assert.equal(this.$console, `${this.$timestamp} | [undefined] null`);
+	});
+});
+
+describe("Tags", function() {
+	it("outputs no tags", function() {
+		Log.info([], "FOO");
+		assert.equal(this.$console, `${this.$timestamp} | FOO`);
+	});
+
+	it("outputs a single tag", function() {
+		Log.info("FOO", "BAR");
+		assert.equal(this.$console, `${this.$timestamp} | [FOO] BAR`);
+	});
+
+	it("outputs multiple tags", function() {
+		Log.info(["FOO", "BAR"], "FOO");
+		assert.equal(this.$console, `${this.$timestamp} | [FOO] [BAR] FOO`);
+	});
+});
+
+describe("Strings", function() {
+	it("outputs a string", function() {
+		Log.info("FOO");
+		assert.equal(this.$console, `${this.$timestamp} | FOO`);
+	});
+
+	it("outputs multiple strings", function() {
+		Log.info([], "FOO", "BAR");
+		assert.equal(this.$console, `${this.$timestamp} | FOO BAR`);
+	});
+});
+
+describe("Arrays", function() {
+	it("outputs an array", function() {
+		Log.info([1, 2, 3]);
+		assert.equal(this.$console, `${this.$timestamp} | [\n    1,\n    2,\n    3\n]`);
+	});
+});
+
+describe("Objects", function() {
+	it("outputs an object", function() {
+		Log.info({ foo: "FOO", bar: "BAR" });
+		assert.equal(this.$console, `${this.$timestamp} | {\n    "foo": "FOO",\n    "bar": "BAR"\n}`);
+	});
+
+	it("outputs an object with a circular reference", function() {
+		let obj = { foo: "FOO", bar: "BAR" };
+		obj.obj = obj;
+
+		Log.info(obj);
+		assert.equal(this.$console, `${this.$timestamp} | { foo: 'FOO', bar: 'BAR', obj: [Circular] }`);
+	});
+});
+
+describe("Errors", function() {
+	it("outputs an error", function() {
+		Log.info(new Error("FOO"));
+		assert.equal(this.$console.substr(0, 37), `${this.$timestamp} | Error: FOO\n    `);
+	});
+});
+
+describe("Functions", function() {
+	it("outputs a named function", function() {
+		Log.info(function foo() {});
+		assert.equal(this.$console, `${this.$timestamp} | function foo() {}`);
+	});
+
+	it("outputs an anonymous function", function() {
+		Log.info(function() {});
+		assert.equal(this.$console, `${this.$timestamp} | function () {}`);
+	});
+
+	it("outputs an arrow function", function() {
+		Log.info(() => {});
+		assert.equal(this.$console, `${this.$timestamp} | () => {}`);
+	});
+});
+
+describe("Other", function() {
+	it("outputs mixed variable types", function() {
+		Log.info([], "FOO", ["BAR"]);
+		assert.equal(this.$console, `${this.$timestamp} | FOO [\n    "BAR"\n]`);
+	});
+
+	it("outputs nested variables", function() {
+		Log.info([], { foo: "FOO", bar: ["BAR"] });
+		assert.equal(this.$console, `${this.$timestamp} | {\n    "foo": "FOO",\n    "bar": [\n        "BAR"\n    ]\n}`);
+	});
+});
+
+describe("Hooks", function() {
+	it("only allows supported events", function() {
+		let log = Log.clone();
+
+		log.addHook("beforeWrite", () => {});
+		assert.equal(this.$console, null);
+
+		log.addHook("afterWrite", () => {});
+		assert.equal(this.$console, null);
+
+		log.addHook("FOO", () => {});
+		assert.equal(this.$console, `${this.$timestamp} | [unklogger] Event 'FOO' does not exist.`);
+	});
+
+	it("only accepts functions", function() {
+		let log = Log.clone();
+
+		log.addHook("beforeWrite", () => {});
+		assert.equal(this.$console, null);
+
+		log.addHook("beforeWrite", "FOO");
+		assert.equal(this.$console, `${this.$timestamp} | [unklogger] Argument 'fn' is not a function.`);
+	});
+
+	it("executes beforeWrite hooks", function() {
+		let log = Log.clone();
+
+		log.addHook("beforeWrite", (context) => {
+			context.$output += " BAR";
+		});
+
+		log.addHook("beforeWrite", (context) => {
+			context.$output += " OK";
+		});
+
+		log.info("FOO");
+		assert.equal(this.$console, `${this.$timestamp} | FOO BAR OK`);
+	});
+
+	it("executes afterWrite hooks", function() {
+		let log = Log.clone();
+
+		log.addHook("afterWrite", (context) => {
+			this.$console += " OK";
+		});
+
+		log.info("FOO");
+		assert.equal(this.$console, `${this.$timestamp} | FOO OK`);
+	});
+});
+
+describe("Context", function() {
+	it("returns correct timestamp", function() {
+		let context = Log.info("FOO", "BAR");
+		assert.equal(context.$timestamp, this.$timestamp);
+	});
+
+	it("returns correct tags", function() {
+		let context = Log.info(["FOO", "BAR"], "FOO");
+		assert.deepEqual(context.$tags, ["FOO", "BAR"]);
+	});
+
+	it("returns correct message", function() {
+		let context = Log.info("FOO", "FOO", "BAR");
+		assert.equal(context.$message, "FOO BAR");
+	});
+
+	it("returns correct output", function() {
+		let context = Log.info("FOO", "FOO", "BAR");
+		assert.equal(context.$output, `${this.$timestamp} | [FOO] FOO BAR`);
+	});
+
+	it("returns correct arguments", function() {
+		let context = Log.info(["FOO", "BAR"], "FOO", "BAR");
+
+		assert.deepEqual(context.$arguments, [
+			["FOO", "BAR"],
+			"FOO",
+			"BAR",
+		]);
+	});
+});
+
+describe("Extensions", function() {
+	it("only allow string as a name", function() {
+		let log = Log.clone();
+
+		log.addExtension("send", () => {});
+		assert.equal(this.$console, null);
+
+		log.addExtension(["send"], () => {});
+		assert.equal(this.$console, `${this.$timestamp} | [unklogger] Argument 'name' is not a string.`);
+	});
+
+	it("only accepts functions", function() {
+		let log = Log.clone();
+
+		log.addExtension("send", () => {});
+		assert.equal(this.$console, null);
+
+		log.addExtension("send", "FOO");
+		assert.equal(this.$console, `${this.$timestamp} | [unklogger] Argument 'fn' is not a function.`);
+	});
+
+	it("binds the extension to the context", function() {
+		let log = Log.clone();
+		log.addExtension("data", () => {});
+
+		let context = log.info("FOO");
+		assert.exists(context.data);
+		assert.isFunction(context.data);
+	});
+
+	it("passes context to the extension", function() {
+		let log = Log.clone();
+		let extensionContext = null;
+
+		log.addExtension("data", (context) => {
+			extensionContext = context;
+		});
+
+		let context = log.info("FOO");
+		context.data();
+		assert.equal(context, extensionContext);
+	});
+
+	it("passes arguments to the extension", function() {
+		let log = Log.clone();
+		let extensionArgs = null;
+
+		log.addExtension("data", (_, foo, bar) => {
+			extensionArgs = [foo, bar];
+		});
+
+		let context = log.info("FOO");
+		context.data("FOO", "BAR");
+		assert.deepEqual(extensionArgs, ["FOO", "BAR"]);
+	});
+});
