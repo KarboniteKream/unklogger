@@ -12,12 +12,12 @@ class Log {
 			console: console,
 		};
 
-		this.$hooks = {
+		this._$hooks = {
 			beforeWrite: [],
 			afterWrite: [],
 		};
 
-		this.$extensions = [];
+		this._$extensions = [];
 	}
 
 	new() {
@@ -28,16 +28,16 @@ class Log {
 		let instance = new this.constructor();
 		instance.$config = { ...this.$config };
 
-		for (let [name, hooks] of Object.entries(this.$hooks)) {
-			instance.$hooks[name] = [...hooks];
+		for (let [name, hooks] of Object.entries(this._$hooks)) {
+			instance._$hooks[name] = [...hooks];
 		}
 
-		instance.$extensions = [...this.$extensions];
+		instance._$extensions = [...this._$extensions];
 		return instance;
 	}
 
 	addHook(event, fn) {
-		if (Object.keys(this.$hooks).includes(event) === false) {
+		if (Object.keys(this._$hooks).includes(event) === false) {
 			this.warn("unklogger", `Event '${event}' does not exist.`);
 			return this;
 		}
@@ -47,7 +47,7 @@ class Log {
 			return this;
 		}
 
-		this.$hooks[event].push(fn);
+		this._$hooks[event].push(fn);
 		return this;
 	}
 
@@ -57,7 +57,7 @@ class Log {
 			return this;
 		}
 
-		this.$extensions[name] = fn;
+		this._$extensions[name] = fn;
 		return this;
 	}
 
@@ -123,7 +123,7 @@ class Log {
 
 		this._executeHooks("afterWrite", context);
 
-		for (let [name, fn] of Object.entries(this.$extensions)) {
+		for (let [name, fn] of Object.entries(this._$extensions)) {
 			context[name] = (...args) => fn(context, ...args);
 		}
 
@@ -131,7 +131,7 @@ class Log {
 	}
 
 	_executeHooks(event, context) {
-		for (let hook of this.$hooks[event]) {
+		for (let hook of this._$hooks[event]) {
 			hook(context);
 		}
 	}
