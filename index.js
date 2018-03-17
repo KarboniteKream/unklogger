@@ -137,7 +137,9 @@ class Log {
 
 	_executeHooks(event, context) {
 		for (let hook of this._$hooks[event]) {
-			hook(context);
+			if (hook instanceof Function) {
+				hook(context);
+			}
 		}
 	}
 }
