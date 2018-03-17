@@ -1,6 +1,6 @@
 {
   "name": "unklogger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple and colorful logger for Node.",
   "main": "index.js",
   "repository": "https://github.com/KarboniteKream/unklogger",
@@ -15,7 +15,8 @@
     "test": "mocha"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "helpers.js"
   ],
   "dependencies": {
     "chalk": "^2.3.0"
