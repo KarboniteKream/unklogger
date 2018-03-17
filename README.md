@@ -6,11 +6,6 @@ A simple and colorful logger for Node.js.
 yarn add unklogger
 ```
 
-## Test
-```bash
-yarn run test
-```
-
 ## Usage
 ```javascript
 unklogger.success("Looking good!");
@@ -69,4 +64,9 @@ unklogger.addExtension("send", (context, url) => {
 });
 
 unklogger.info("GO!").send("https://www.kream.io/logs");
+```
+
+## Tests
+```bash
+yarn run test
 ```
