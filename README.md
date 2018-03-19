@@ -54,7 +54,7 @@ unklogger.addHook("beforeWrite", (context) => {
     context.$output += " BAR";
 });
 
-unklogger.addHook("afterHook", (context) => {
+unklogger.addHook("afterWrite", (context) => {
     axios.post("https://www.kream.io/logs", { output: context.$output });
 });
 
