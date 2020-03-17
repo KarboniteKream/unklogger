@@ -165,7 +165,10 @@ describe("Objects", function() {
 		obj.obj = obj;
 
 		Log.info(obj);
-		assert.equal(this.$console, `${this.$timestamp} | { foo: 'FOO', bar: 'BAR', obj: [Circular] }`);
+		assert.oneOf(this.$console, [
+			`${this.$timestamp} | { foo: 'FOO', bar: 'BAR', obj: [Circular] }`,
+			`${this.$timestamp} | <ref *1> { foo: 'FOO', bar: 'BAR', obj: [Circular *1] }`,
+		]);
 	});
 });
 
@@ -184,7 +187,7 @@ describe("Functions", function() {
 
 	it("outputs an anonymous function", function() {
 		Log.info(function() {});
-		assert.equal(this.$console, `${this.$timestamp} | function () {}`);
+		assert.equal(this.$console, `${this.$timestamp} | function() {}`);
 	});
 
 	it("outputs an arrow function", function() {
