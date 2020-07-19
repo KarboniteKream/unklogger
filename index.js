@@ -1,153 +1,153 @@
 "use strict";
 
 const chalk = require("chalk");
-const helpers = require("./helpers");
 const os = require("os");
 const util = require("util");
 
+const helpers = require("./helpers");
+
 class Log {
-	constructor() {
-		this.$config = {
-			quiet: false,
-			colors: true,
-			console: console,
-		};
+    constructor() {
+        this.$config = {
+            quiet: false,
+            colors: true,
+            console,
+        };
 
-		this._$hooks = {
-			beforeWrite: [],
-			afterWrite: [],
-		};
+        this._$hooks = {
+            beforeWrite: [],
+            afterWrite: [],
+        };
 
-		this._$extensions = [];
-	}
+        this._$extensions = [];
+    }
 
-	new() {
-		return new this.constructor();
-	}
+    new() {
+        return new Log();
+    }
 
-	clone() {
-		let instance = new this.constructor();
-		instance.$config = { ...this.$config };
+    clone() {
+        const instance = new Log();
+        instance.$config = { ...this.$config };
 
-		for (let [name, hooks] of Object.entries(this._$hooks)) {
-			instance._$hooks[name] = [...hooks];
-		}
+        for (const [name, hooks] of Object.entries(this._$hooks)) {
+            instance._$hooks[name] = [...hooks];
+        }
 
-		instance._$extensions = [...this._$extensions];
-		return instance;
-	}
+        instance._$extensions = [...this._$extensions];
+        return instance;
+    }
 
-	addHook(event, fn) {
-		if (Object.keys(this._$hooks).includes(event) === false) {
-			this.warn("unklogger", `Event '${event}' does not exist.`);
-			return this;
-		}
+    addHook(event, fn) {
+        if (!Object.keys(this._$hooks).includes(event)) {
+            this.warn("unklogger", `Event '${event}' does not exist.`);
+            return this;
+        }
 
-		if (fn instanceof Function === false) {
-			this.error("unklogger", "Argument 'fn' is not a function.");
-			return this;
-		}
+        if (!(fn instanceof Function)) {
+            this.error("unklogger", "Argument 'fn' is not a function.");
+            return this;
+        }
 
-		this._$hooks[event].push(fn);
-		return this;
-	}
+        this._$hooks[event].push(fn);
+        return this;
+    }
 
-	addExtension(name, fn) {
-		if (typeof name !== "string") {
-			this.error("unklogger", "Argument 'name' is not a string.");
-			return this;
-		}
+    addExtension(name, fn) {
+        if (typeof name !== "string") {
+            this.error("unklogger", "Argument 'name' is not a string.");
+            return this;
+        }
 
-		if (fn instanceof Function === false) {
-			this.error("unklogger", "Argument 'fn' is not a function.");
-			return this;
-		}
+        if (!(fn instanceof Function)) {
+            this.error("unklogger", "Argument 'fn' is not a function.");
+            return this;
+        }
 
-		this._$extensions[name] = fn;
-		return this;
-	}
+        this._$extensions[name] = fn;
+        return this;
+    }
 
-	info(...messages) {
-		return this._write(this.$config.console.info, messages);
-	}
+    info(...messages) {
+        return this._write(this.$config.console.info, messages);
+    }
 
-	success(...messages) {
-		return this._write(this.$config.console.log, messages, chalk.green);
-	}
+    success(...messages) {
+        return this._write(this.$config.console.log, messages, chalk.green);
+    }
 
-	warn(...messages) {
-		return this._write(this.$config.console.warn, messages, chalk.yellow);
-	}
+    warn(...messages) {
+        return this._write(this.$config.console.warn, messages, chalk.yellow);
+    }
 
-	error(...messages) {
-		return this._write(this.$config.console.error, messages, chalk.red);
-	}
+    error(...messages) {
+        return this._write(this.$config.console.error, messages, chalk.red);
+    }
 
-	_write(stream, messages, color = null) {
-		let context = {
-			$timestamp: helpers.getTimestamp(),
-			$tags: [],
-			$message: "",
-			$output: "",
-			$arguments: [...messages],
-		};
+    _write(stream, messages, color = null) {
+        const context = {
+            $timestamp: helpers.getTimestamp(),
+            $tags: [],
+            $message: "",
+            $output: "",
+            $arguments: [...messages],
+        };
 
-		// If there is more than one argument, treat the first one as tags.
-		if (messages.length > 1) {
-			let tags = messages.shift();
-			context.$tags = Array.isArray(tags) ? tags : [tags];
-		}
+        // If there is more than one argument, treat the first one as the tags.
+        if (messages.length > 1) {
+            context.$tags = [messages.shift()].flat();
+        }
 
-		context.$message = messages.reduce((acc, el) => {
-			let message = el;
-			let separator = el instanceof Error ? os.EOL : " ";
+        context.$message = messages.reduce((acc, el) => {
+            let message = el;
 
-			if (el instanceof Error) {
-				message = el.stack;
-			} else if (typeof el === "object") {
-				try {
-					message = JSON.stringify(el, null, 4);
-				} catch (_) {
-					// Handle circular references.
-					message = util.inspect(el);
-				}
-			}
+            if (el instanceof Error) {
+                message = el.stack;
+            } else if (typeof el === "object") {
+                try {
+                    message = JSON.stringify(el, null, 4);
+                } catch (_) {
+                    // Handle circular references.
+                    message = util.inspect(el);
+                }
+            }
 
-			return (acc + message + separator);
-		}, "").trim();
+            const separator = el instanceof Error ? os.EOL : " ";
+            return acc + message + separator;
+        }, "").trim();
 
-		let tags = context.$tags.map((t) => `[${t}] `).join("");
-		context.$output = `${context.$timestamp} | ${tags}${context.$message}`;
+        const tags = context.$tags.map((t) => `[${t}] `).join("");
+        context.$output = `${context.$timestamp} | ${tags}${context.$message}`;
 
-		this._executeHooks("beforeWrite", context);
+        this._executeHooks("beforeWrite", context);
 
-		if (this.$config.quiet === false) {
-			if (this.$config.colors === true && color instanceof Function) {
-				stream(color(context.$output));
-			} else {
-				stream(context.$output);
-			}
-		}
+        if (!this.$config.quiet) {
+            if (this.$config.colors && color instanceof Function) {
+                stream(color(context.$output));
+            } else {
+                stream(context.$output);
+            }
+        }
 
-		this._executeHooks("afterWrite", context);
+        this._executeHooks("afterWrite", context);
 
-		for (let [name, fn] of Object.entries(this._$extensions)) {
-			context[name] = (...args) => fn(context, ...args);
-		}
+        for (const [name, fn] of Object.entries(this._$extensions)) {
+            context[name] = (...args) => fn(context, ...args);
+        }
 
-		return context;
-	}
+        return context;
+    }
 
-	_executeHooks(event, context) {
-		for (let hook of this._$hooks[event]) {
-			if (hook instanceof Function) {
-				hook(context);
-			}
-		}
-	}
+    _executeHooks(event, context) {
+        for (const hook of this._$hooks[event]) {
+            if (hook instanceof Function) {
+                hook(context);
+            }
+        }
+    }
 }
 
-let unklogger = new Log();
+const unklogger = new Log();
 
 module.exports = unklogger;
 module.exports.default = unklogger;

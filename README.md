@@ -16,8 +16,8 @@ unklogger.success("Looking good!");
 unklogger.error("Server #1", "OH NO!");
 // 2017-03-10 19:00:00 | [Server #1] OH NO!
 
-unklogger.warn("Response", "OK", {foo: "0", bar: "1"}, [0, 1, 2]);
-// 2017-03-10 19:11:07 | [Response] OK {foo: "0", bar: "1"} [0, 1, 2]
+unklogger.warn("Response", "OK", { foo: "0", bar: "1" }, [0, 1, 2]);
+// 2017-03-10 19:11:07 | [Response] OK { foo: "0", bar: "1" } [0, 1, 2]
 
 unklogger.info(["Multiple", "Tags"], "I support multiple tags.");
 // 2017-03-10 19:11:07 | [Multiple] [Tags] I support multiple tags.
@@ -26,9 +26,9 @@ unklogger.info(["Multiple", "Tags"], "I support multiple tags.");
 ### Configuration
 ```javascript
 unklogger.$config = {
-    quiet: false,     // Suppress output.
-    colors: true,     // Suppress colors.
-    console: console, // Override output streams.
+    quiet: false,    // Suppress output.
+    colors: true,    // Suppress colors.
+    console: logger, // Override output streams.
 };
 ```
 
@@ -40,7 +40,7 @@ It contains the following properties:
 * `$tags`: All passed tags as an array.
 * `$message`: All other arguments combined, as a string.
 * `$output`: Text that was/will be logged to the console.
-* `$arguments`: All arguments, exactly as passed to unklogger.
+* `$arguments`: All arguments, exactly as passed to `unklogger`.
 
 ### Hooks
 You can use the `beforeWrite` and `afterWrite` events to add hooks to perform any action. Multiple hooks can be bound to an event. Each is passed the current context.
@@ -63,7 +63,7 @@ unklogger.info("ONE");
 ```
 
 ### Extensions
-Extensions are functions returned by unklogger, which you can chain after the first call.
+Extensions are functions returned by `unklogger`, which you can chain after the first call.
 
 ```javascript
 unklogger.addExtension("send", (context, url) => {
