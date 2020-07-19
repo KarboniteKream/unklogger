@@ -11,6 +11,9 @@
     "hooks",
     "extensions"
   ],
+  "engines": {
+    "node": ">=10"
+  },
   "scripts": {
     "test": "mocha"
   },
