@@ -1,5 +1,5 @@
 # unklogger
-[![Build Status](https://travis-ci.org/KarboniteKream/unklogger.svg?branch=master)](https://travis-ci.org/KarboniteKream/unklogger)
+![CI](https://github.com/KarboniteKream/unklogger/workflows/CI/badge.svg)
 
 A simple and colorful logger for Node.js.
 

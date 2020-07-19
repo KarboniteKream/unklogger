@@ -95,7 +95,8 @@ class Log {
 
         // If there is more than one argument, treat the first one as the tags.
         if (messages.length > 1) {
-            context.$tags = [messages.shift()].flat();
+            const tags = messages.shift();
+            context.$tags = Array.isArray(tags) ? tags : [tags];
         }
 
         context.$message = messages.reduce((acc, el) => {
