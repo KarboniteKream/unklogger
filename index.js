@@ -35,6 +35,22 @@ class Log {
         return instance;
     }
 
+    info(...messages) {
+        return helpers.write(this, this.$config.console.info, messages);
+    }
+
+    success(...messages) {
+        return helpers.write(this, this.$config.console.log, messages, chalk.green);
+    }
+
+    warn(...messages) {
+        return helpers.write(this, this.$config.console.warn, messages, chalk.yellow);
+    }
+
+    error(...messages) {
+        return helpers.write(this, this.$config.console.error, messages, chalk.red);
+    }
+
     addHook(event, fn) {
         if (!Object.keys(this._$hooks).includes(event)) {
             this.warn("unklogger", `Event '${event}' does not exist.`);
@@ -63,22 +79,6 @@ class Log {
 
         this._$extensions[name] = fn;
         return this;
-    }
-
-    info(...messages) {
-        return helpers.write(this, this.$config.console.info, messages);
-    }
-
-    success(...messages) {
-        return helpers.write(this, this.$config.console.log, messages, chalk.green);
-    }
-
-    warn(...messages) {
-        return helpers.write(this, this.$config.console.warn, messages, chalk.yellow);
-    }
-
-    error(...messages) {
-        return helpers.write(this, this.$config.console.error, messages, chalk.red);
     }
 }
 
