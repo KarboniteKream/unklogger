@@ -5,7 +5,7 @@ A simple and colorful logger for Node.js.
 
 ## Installation
 ```bash
-yarn add unklogger
+npm install [--save] unklogger
 ```
 
 ## Usage
@@ -75,5 +75,5 @@ unklogger.info("GO!").send("https://www.kream.io/logs");
 
 ## Tests
 ```bash
-yarn run test
+npm run test
 ```
