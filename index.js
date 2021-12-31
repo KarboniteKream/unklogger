@@ -52,6 +52,11 @@ class Log {
     }
 
     addHook(event, fn) {
+        if (typeof event !== "string") {
+            this.error("unklogger", "Argument 'event' is not a string.");
+            return this;
+        }
+
         if (!Object.keys(this._$hooks).includes(event)) {
             this.warn("unklogger", `Event '${event}' does not exist.`);
             return this;

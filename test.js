@@ -33,7 +33,7 @@ beforeEach(function() {
 });
 
 describe("Helpers", function() {
-    describe(".getTimestamp()", function() {
+    describe("getTimestamp()", function() {
         it("correctly formats the date", function() {
             assert.match(this.$timestamp, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
         });
@@ -210,6 +210,16 @@ describe("Other", function() {
 });
 
 describe("Hooks", function() {
+    it("only allow string as a name", function() {
+        const log = Log.clone();
+
+        log.addHook("beforeWrite", () => {});
+        assert.equal(this.$console, null);
+
+        log.addHook(["beforeWrite"], () => {});
+        assert.equal(this.$console, `${this.$timestamp} | [unklogger] Argument 'event' is not a string.`);
+    });
+
     it("only allows supported events", function() {
         const log = Log.clone();
 
@@ -346,5 +356,20 @@ describe("Extensions", function() {
         const context = log.info("FOO");
         context.data("FOO", "BAR");
         assert.deepEqual(extensionArgs, ["FOO", "BAR"]);
+    });
+
+    it("can chain extensions", function() {
+        const log = Log.clone();
+
+        let extensionContext = 0;
+        log.addExtension("one", () => {
+            extensionContext++;
+        });
+        log.addExtension("two", () => {
+            extensionContext++;
+        });
+
+        log.info("FOO").one().two();
+        assert.equal(2, extensionContext);
     });
 });

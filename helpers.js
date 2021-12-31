@@ -36,7 +36,7 @@ function write(log, stream, messages, color = null) {
         return acc + message + separator;
     }, "").trim();
 
-    const tags = context.$tags.map((t) => `[${t}] `).join("");
+    const tags = context.$tags.map((tag) => `[${tag}] `).join("");
     context.$output = `${context.$timestamp} | ${tags}${context.$message}`;
 
     executeHooks(log, "beforeWrite", context);
@@ -52,7 +52,10 @@ function write(log, stream, messages, color = null) {
     executeHooks(log, "afterWrite", context);
 
     for (const [name, fn] of Object.entries(log._$extensions)) {
-        context[name] = (...args) => fn(context, ...args);
+        context[name] = (...args) => {
+            fn(context, ...args);
+            return context;
+        };
     }
 
     return context;
@@ -60,9 +63,7 @@ function write(log, stream, messages, color = null) {
 
 function executeHooks(log, event, context) {
     for (const hook of log._$hooks[event]) {
-        if (hook instanceof Function) {
-            hook(context);
-        }
+        hook(context);
     }
 }
 
