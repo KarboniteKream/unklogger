@@ -26,9 +26,9 @@ unklogger.info(["Multiple", "Tags"], "I support multiple tags.");
 ### Configuration
 ```javascript
 unklogger.$config = {
-    quiet: false,    // Suppress output.
-    colors: true,    // Suppress colors.
-    console: logger, // Override output streams.
+    quiet: false,     // Suppress output.
+    colors: true,     // Enable colors.
+    console: Console, // Override console streams.
 };
 ```
 
