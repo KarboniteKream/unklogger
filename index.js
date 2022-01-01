@@ -35,6 +35,10 @@ class Log {
         return instance;
     }
 
+    log(...messages) {
+        return helpers.write(this, this.$config.console.log, messages);
+    }
+
     info(...messages) {
         return helpers.write(this, this.$config.console.info, messages);
     }
