@@ -1,7 +1,6 @@
-"use strict";
+import chalk from "chalk";
 
-const chalk = require("chalk");
-const helpers = require("./helpers");
+import { write } from "./helpers.js";
 
 class Log {
     constructor() {
@@ -36,19 +35,19 @@ class Log {
     }
 
     info(...messages) {
-        return helpers.write(this, this.$config.console.info, messages);
+        return write(this, this.$config.console.info, messages);
     }
 
     success(...messages) {
-        return helpers.write(this, this.$config.console.log, messages, chalk.green);
+        return write(this, this.$config.console.log, messages, chalk.green);
     }
 
     warn(...messages) {
-        return helpers.write(this, this.$config.console.warn, messages, chalk.yellow);
+        return write(this, this.$config.console.warn, messages, chalk.yellow);
     }
 
     error(...messages) {
-        return helpers.write(this, this.$config.console.error, messages, chalk.red);
+        return write(this, this.$config.console.error, messages, chalk.red);
     }
 
     addHook(event, fn) {
@@ -87,6 +86,4 @@ class Log {
     }
 }
 
-const unklogger = new Log();
-module.exports = unklogger;
-module.exports.default = unklogger;
+export default new Log();

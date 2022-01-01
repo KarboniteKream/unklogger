@@ -10,6 +10,8 @@ npm install [--save] unklogger
 
 ## Usage
 ```javascript
+import unklogger from "unklogger";
+
 unklogger.success("Looking good!");
 // 2017-03-10 18:55:15 | Looking good!
 

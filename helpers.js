@@ -1,9 +1,7 @@
-"use strict";
+import os from "os";
+import util from "util";
 
-const os = require("os");
-const util = require("util");
-
-function write(log, stream, messages, color = null) {
+export function write(log, stream, messages, color = null) {
     const context = {
         $timestamp: getTimestamp(),
         $tags: [],
@@ -67,7 +65,7 @@ function executeHooks(log, event, context) {
     }
 }
 
-function getTimestamp() {
+export function getTimestamp() {
     const date = new Date();
 
     const year = date.getFullYear();
@@ -87,8 +85,3 @@ function pad(number) {
 
     return number;
 }
-
-module.exports = {
-    write,
-    getTimestamp,
-};

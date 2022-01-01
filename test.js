@@ -1,10 +1,8 @@
-"use strict";
+import { assert } from "chai";
+import chalk from "chalk";
 
-const assert = require("chai").assert;
-const chalk = require("chalk");
-
-const Log = require("./index");
-const helpers = require("./helpers");
+import Log from "./index.js";
+import { getTimestamp } from "./helpers.js";
 
 before(function() {
     const mock = (stream) => (text) => {
@@ -29,7 +27,7 @@ before(function() {
 beforeEach(function() {
     this.$console = null;
     this.$stream = null;
-    this.$timestamp = helpers.getTimestamp();
+    this.$timestamp = getTimestamp();
 });
 
 describe("Helpers", function() {
