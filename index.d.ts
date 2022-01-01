@@ -31,9 +31,63 @@ export type Context = {
 } & Record<string, (...args: any[]) => Context>;
 
 /**
+ * Console configuration.
+ */
+export interface Console {
+    /**
+     * Output stream for the `log` level.
+     * Equivalent to `console.log()`.
+     */
+    log(message?: any, ...optionalParams: any[]): void;
+
+    /**
+     * Output stream for the `info` level.
+     * Equivalent to `console.info()`.
+     */
+    info(message?: any, ...optionalParams: any[]): void;
+
+    /**
+     * Output stream for the `warn` level.
+     * Equivalent to `console.warn()`.
+     */
+    warn(message?: any, ...optionalParams: any[]): void;
+
+    /**
+     * Output stream for the `error` level.
+     * Equivalent to `console.error()`.
+     */
+    error(message?: any, ...optionalParams: any[]): void;
+}
+
+/**
+ * Unklogger configuration.
+ */
+export interface Configuration {
+    /**
+     * Whether the output should be suppressed.
+     */
+    quiet: boolean;
+
+    /**
+     * Whether the colors are enabled.
+     */
+    colors: boolean;
+
+    /**
+     * Console stream configuration.
+     */
+    console: Console,
+}
+
+/**
  * Unklogger instance.
  */
 export interface Unklogger {
+    /**
+     * Instance configuration.
+     */
+    $config: Configuration;
+
     /**
      * Creates a new instance.
      *
