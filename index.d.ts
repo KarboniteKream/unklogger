@@ -103,6 +103,15 @@ export interface Unklogger {
     clone(): Unklogger;
 
     /**
+     * Logs the specified messages on the `log` level.
+     *
+     * @param messages - List of objects to log.
+     *
+     * @returns The message {@link Context}.
+     */
+    log(...messages: any[]): Context;
+
+    /**
      * Logs the specified messages on the `info` level.
      *
      * @param messages - List of objects to log.
