@@ -11,7 +11,7 @@
     "extensions"
   ],
   "engines": {
-    "node": "^14.13.1 || >= 16"
+    "node": ">= 16"
   },
   "type": "module",
   "exports": "./index.js",
@@ -24,10 +24,10 @@
     "test": "mocha"
   },
   "dependencies": {
-    "chalk": "^5.1.2"
+    "chalk": "^5.3.0"
   },
   "devDependencies": {
-    "chai": "^4.3.7",
-    "mocha": "^10.1.0"
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
   }
 }
