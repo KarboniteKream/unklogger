@@ -2,7 +2,10 @@
   "name": "unklogger",
   "version": "2.4.0",
   "description": "A simple and colorful logger for Node",
-  "repository": "https://github.com/KarboniteKream/unklogger",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KarboniteKream/unklogger.git"
+  },
   "author": "Klemen Košir <klemen.kosir@kream.io>",
   "license": "MIT",
   "keywords": [
