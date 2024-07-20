@@ -11,7 +11,7 @@
     "extensions"
   ],
   "engines": {
-    "node": ">= 16"
+    "node": ">= 18"
   },
   "type": "module",
   "exports": "./index.js",
@@ -27,7 +27,7 @@
     "chalk": "^5.3.0"
   },
   "devDependencies": {
-    "chai": "^4.3.10",
-    "mocha": "^10.2.0"
+    "chai": "^5.1.1",
+    "mocha": "^10.6.0"
   }
 }
